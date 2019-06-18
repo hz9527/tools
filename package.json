@@ -1,0 +1,41 @@
+{
+  "name": "tools",
+  "version": "0.1.0",
+  "description": "tools for fe",
+  "main": "index.js",
+  "bin": {
+    "tools": "index.js"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "lint": "eslint src --ext .ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hz9527/tools.git"
+  },
+  "keywords": [
+    "tools"
+  ],
+  "author": "hz9527",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hz9527/tools/issues"
+  },
+  "homepage": "https://github.com/hz9527/tools#readme",
+  "dependencies": {
+    "commander": "^2.20.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.10.2",
+    "@typescript-eslint/parser": "^1.10.2",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-typescript": "^2.0.0",
+    "eslint-import-resolver-typescript": "^1.1.1",
+    "eslint-plugin-import": "^2.17.3",
+    "typescript": "^3.5.2"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "typeRoots": ["./src/types"],
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "removeComments": true,
+    "sourceMap": true,
+    "declaration": true,
+    "alwaysStrict": true,
+    "experimentalDecorators": true,
+    "strictFunctionTypes": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "target": "esnext",
+    "baseUrl": ".",
+    "outDir": ".",
+  },
+  "include": [
+    "./src/lib/index.ts",
+    "./src/cmds/*/index.ts"
+  ]
+}
