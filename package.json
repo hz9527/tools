@@ -10,7 +10,9 @@
     "lib": "lib"
   },
   "scripts": {
-    "lint": "eslint src --ext .ts"
+    "lint": "eslint src --ext .ts",
+    "start": "tsc -w",
+    "dev": "rm -rf ./lib/* && tsc -w"
   },
   "repository": {
     "type": "git",
@@ -26,9 +28,12 @@
   },
   "homepage": "https://github.com/hz9527/tools#readme",
   "dependencies": {
-    "commander": "^2.20.0"
+    "commander": "^2.20.0",
+    "glob": "^7.1.4"
   },
   "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/node": "^12.0.8",
     "@typescript-eslint/eslint-plugin": "^1.10.2",
     "@typescript-eslint/parser": "^1.10.2",
     "eslint": "^5.16.0",

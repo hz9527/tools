@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "typeRoots": ["./src/types"],
     "moduleResolution": "node",
     "module": "commonjs",
     "removeComments": true,
@@ -13,11 +12,8 @@
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "target": "esnext",
-    "baseUrl": ".",
-    "outDir": ".",
+    "outDir": "lib",
+    "baseUrl": "./src"
   },
-  "include": [
-    "./src/lib/index.ts",
-    "./src/cmds/*/index.ts"
-  ]
+  "include": ["src"]
 }
