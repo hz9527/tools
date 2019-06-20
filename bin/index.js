@@ -1,29 +1,34 @@
 #! /usr/bin/env node
+
+/* eslint-disable */
 const {version} = require('../package.json')
 const program = require('commander')
+const Register = require('../lib/index').default
 
-const Creators = [
-  'rollup',
-  'node-esm',
-  'release',
-  'changlog',
-  'lint'
-]
+const register = new Register([
+  ['create', 'create template for your project', false],
+  ['server', 'create server to do something', false],
+  ['regist', 'create template for your project', true],
+])
 
-const Servers = []
-const options = {
-  source: {
-    args: [],
-    creators: [],
-    servers: []
-  }
-}
+register.start()
+  .then(() => {
+    program
+      .version(version)
+      .description('a useful tool for you');
 
-program
-  .version(version)
-  .description('a useful tool for you')
-
-program
-  .command('create <tem>', 'create script or template', {})
-
-program.parse(process.argv)
+    register.getCmds().forEach(([cmd, desc, isSingle]) => {
+      register.getOptions(cmd).reduce(
+        (pro, args) => pro.option(...args),
+        program.command(`${cmd}${isSingle ? '' : ' <opt>'}`)
+          .description(desc)
+      ).action((opt) => {
+        console.log(opt)
+      })
+    })
+    program.command('test')
+      .action((cmd, opt) => {
+        console.log(777)
+      })
+    program.parse(process.argv)
+  })

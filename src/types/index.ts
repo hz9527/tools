@@ -5,7 +5,7 @@ export type Opts = OptItem[]
 interface OptHandler {
   <T>(value: OptItem, res?: T): OptItem | T;
 }
-export type Args = [string, string, OptHandler?, any?]
+export type Args = [string, string, (OptHandler | any)?, any?]
 
 export interface Exector {
   name: string;

@@ -1,13 +1,13 @@
 import { Config, ConfKeys } from "types";
 
 // https://github.com/microsoft/TypeScript/issues/20503
-declare const BetterObject: {
-  keys<T extends {}>(object: T): (keyof T)[];
-}
+// declare const Object: {
+//   keys<T extends {}>(object: T): (keyof T)[];
+// }
 
 const confKeys: ConfKeys = {
   type: {type: String},
-  desc: {type: String},
+  desc: {type: String, defaultValue: ''},
   useOpts: {
     type: Array,
     defaultValue: [],
@@ -17,7 +17,7 @@ const confKeys: ConfKeys = {
   }
 }
 
-const Keys: (keyof ConfKeys)[] = BetterObject.keys(confKeys);
+const Keys: (keyof ConfKeys)[] = Object.keys(confKeys);
 
 // todo log
 function isConfig(config: Config): config is Config {

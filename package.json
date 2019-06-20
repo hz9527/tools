@@ -4,7 +4,7 @@
   "description": "tools for fe",
   "main": "index.js",
   "bin": {
-    "tools": "index.js"
+    "tools": "./bin/index.js"
   },
   "directories": {
     "lib": "lib"
@@ -28,8 +28,10 @@
   },
   "homepage": "https://github.com/hz9527/tools#readme",
   "dependencies": {
+    "chalk": "^2.4.2",
     "commander": "^2.20.0",
-    "glob": "^7.1.4"
+    "glob": "^7.1.4",
+    "ora": "^3.4.0"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",

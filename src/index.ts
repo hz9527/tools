@@ -3,6 +3,7 @@ import * as glob from 'glob';
 import * as path from 'path';
 import isConfig from './helper/checker';
 import { error, warn } from './helper/loger';
+import DefaultOpts from './helper/defaultOpts';
 import { Args, Config, CmdArg, CmdData, CmdPkg } from './types';
 
 const SingleName = 'default';
@@ -34,7 +35,8 @@ class Registor {
   options: {[prop: string]: OptConfig}
 
   constructor(types: CmdArg[] = []) {
-    types.forEach((item): void => this.registerType(...item))
+    this.types = {};
+    types.forEach((item): void => this.registerType(...item));
     this.options = {};
   }
 
@@ -46,7 +48,8 @@ class Registor {
     this.options[name] = new OptConfig(name, args);
   }
 
-  private registerType(...[type, desc, isSingle]: CmdArg): void {
+  private registerType(...args: CmdArg): void {
+    let [type, desc, isSingle] = args;
     if (!desc) {
       desc = ''
       warn(`regist command ${type} desc is empty`)
@@ -89,6 +92,7 @@ class Registor {
   }
 
   public start(): Promise<void> {
+    Object.keys(DefaultOpts).forEach((name): void => this.addOption(name, DefaultOpts[name]))
     return new Promise((resolve, reject): void => {
       glob(
         './cmds/*/index.js',
@@ -100,12 +104,32 @@ class Registor {
     }).then((files): void => {
       // read files & init
       (files as string[]).forEach((file): void => {
-        const pkg: CmdPkg = require(file) as CmdPkg; // eslint-disable-line import/no-dynamic-require
+        const pkg: CmdPkg = require(file).default as CmdPkg; // eslint-disable-line import/no-dynamic-require
         let config: Config = typeof pkg === 'function' ? pkg() : pkg;
-        config = isConfig(config) ? config : null;
+        // config = isConfig(config) ? config : null;
+        console.log(config)
         config && this.register(config);
       })
     })
+  }
+
+  public getCmds(): CmdArg[] {
+    return Object.keys(this.types)
+      .map((name): CmdArg => [name, this.types[name].desc, this.types[name].isSingle])
+  }
+
+  public getOptions(type: string): Args[] {
+    return Object.keys(this.options).map((opt: string): Args => {
+      const {users} = this.options[opt];
+      if (users[type]) {
+        return this.options[opt].args; // todo can stat cmd arg
+      }
+      return null;
+    }).filter((item): boolean => !!item)
+  }
+
+  public exec() {
+
   }
 }
 
