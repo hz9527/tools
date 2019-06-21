@@ -10,14 +10,14 @@ export type Args = [string, string, (OptHandler | any)?, any?]
 export interface Exector {
   name: string;
   beforeExec?(...args: Opts): string | void;
-  exec(...args: Opts): Promise<void> | void;
+  exec(opts: {[prop: string]: OptItem}): Promise<void> | void;
   onHelp?(...args: Opts): string;
   desc?: string;
 }
 
 export interface Config extends Exector {
   type: string;
-  beforeRegiste?(): [string, Args][];
+  beforeRegiste?(useOpts: string[]): [string, Args][];
   useOpts: string[];
   rewrite?: boolean;
   typeDesc?: string;
@@ -34,7 +34,7 @@ export interface CmdData {
 export interface ConfKey<T> {
   type: (c: {new(): T}) => T;
   defaultValue?: T;
-  check?: (item: T) => boolean; // item is T;
+  check?: (item: T, data: Config) => boolean; // item is T;
 }
 
 export type ConfKeys = {
@@ -42,4 +42,9 @@ export type ConfKeys = {
 };
 
 export type CmdPkg = Config | (() => Config);
+
+// https://github.com/microsoft/TypeScript/issues/20503
+export interface ObjectExpandKeys {
+  keys<T extends {}>(object: T): (keyof T)[];
+}
 

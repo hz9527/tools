@@ -1,0 +1,10 @@
+{
+  "editor": {
+    "template": "editorconfig",
+    "fileName": ".editorconfig"
+  },
+  "git": {
+    "template": "gitignore",
+    "fileName": ".gitignore"
+  }
+}

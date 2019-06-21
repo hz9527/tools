@@ -13,7 +13,8 @@
     "noImplicitThis": true,
     "target": "esnext",
     "outDir": "lib",
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "resolveJsonModule": true
   },
   "include": ["src"]
 }

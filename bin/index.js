@@ -20,15 +20,16 @@ register.start()
     register.getCmds().forEach(([cmd, desc, isSingle]) => {
       register.getOptions(cmd).reduce(
         (pro, args) => pro.option(...args),
-        program.command(`${cmd}${isSingle ? '' : ' <opt>'}`)
+        program.command(`${cmd}${isSingle ? '' : ' <type>'}`)
           .description(desc)
-      ).action((opt) => {
-        console.log(opt)
-      })
+      ).action(async (typeOrData, data) => {
+        const exec = register.getExector(cmd, isSingle ? null : typeOrData)
+        await exec(isSingle ? typeOrData : data)
+      }).on('--help', function(){
+        console.log('')
+        console.log(cmd, 'help')
+      });
     })
-    program.command('test')
-      .action((cmd, opt) => {
-        console.log(777)
-      })
+
     program.parse(process.argv)
   })

@@ -4,7 +4,7 @@ import * as path from 'path';
 import isConfig from './helper/checker';
 import { error, warn } from './helper/loger';
 import DefaultOpts from './helper/defaultOpts';
-import { Args, Config, CmdArg, CmdData, CmdPkg } from './types';
+import { Args, Config, CmdArg, CmdData, CmdPkg, Exector } from './types';
 
 const SingleName = 'default';
 class OptConfig {
@@ -75,13 +75,15 @@ class Registor {
     if (isSingle && this.types[type].data.length) {
       this.types[type].data.length = 0;
     }
-    const opts = typeof beforeRegiste === 'function' ? beforeRegiste() : null;
+    const opts = typeof beforeRegiste === 'function' ? beforeRegiste(Object.keys(this.options)) : null;
+    const uses = useOpts.slice();
     if (opts) {
       opts.forEach(([name, args]): void => {
         this.addOption(name, args)
+        uses.push(name)
       })
     }
-    useOpts.forEach((optName): void => {
+    Array.from(new Set(uses)).forEach((optName): void => {
       if (this.options[optName]) {
         this.options[optName].addUser(type, opt.name)
       } else {
@@ -106,8 +108,7 @@ class Registor {
       (files as string[]).forEach((file): void => {
         const pkg: CmdPkg = require(file).default as CmdPkg; // eslint-disable-line import/no-dynamic-require
         let config: Config = typeof pkg === 'function' ? pkg() : pkg;
-        // config = isConfig(config) ? config : null;
-        console.log(config)
+        config = isConfig(config) ? config : null;
         config && this.register(config);
       })
     })
@@ -128,8 +129,17 @@ class Registor {
     }).filter((item): boolean => !!item)
   }
 
-  public exec() {
-
+  public getExector(cmd: string, type?: string): Exector['exec'] {
+    const {data, isSingle} = this.types[cmd];
+    let exector: Exector;
+    if (isSingle) {
+      exector = data[0]
+    } else {
+      exector = data.find((item): boolean => item.name === type)
+    }
+    return exector
+      ? exector.exec
+      : (): Promise<void> => Promise.resolve()
   }
 }
 

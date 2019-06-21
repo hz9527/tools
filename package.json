@@ -11,8 +11,9 @@
   },
   "scripts": {
     "lint": "eslint src --ext .ts",
-    "start": "tsc -w",
-    "dev": "rm -rf ./lib/* && tsc -w"
+    "copy": "node ./scripts/move.js",
+    "start": "npm run copy && tsc -w",
+    "dev": "rm -rf ./lib/* && npm run start"
   },
   "repository": {
     "type": "git",

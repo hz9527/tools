@@ -1,13 +1,17 @@
-import { Config, ConfKeys } from "types";
-
-// https://github.com/microsoft/TypeScript/issues/20503
-// declare const Object: {
-//   keys<T extends {}>(object: T): (keyof T)[];
-// }
+import { Config, ConfKeys, ObjectExpandKeys } from "types";
 
 const confKeys: ConfKeys = {
   type: {type: String},
-  desc: {type: String, defaultValue: ''},
+  desc: {
+    type: String,
+    defaultValue: '',
+    check(desc, config): boolean {
+      if (config.isSingle === true) {
+        return true;
+      }
+      return typeof desc === 'string'
+    }
+  },
   useOpts: {
     type: Array,
     defaultValue: [],
@@ -17,7 +21,7 @@ const confKeys: ConfKeys = {
   }
 }
 
-const Keys: (keyof ConfKeys)[] = Object.keys(confKeys);
+const Keys: (keyof ConfKeys)[] = (Object as ObjectExpandKeys).keys(confKeys);
 
 // todo log
 function isConfig(config: Config): config is Config {
@@ -27,28 +31,31 @@ function isConfig(config: Config): config is Config {
   for (let i = 0, l = Keys.length; i < l; i++) {
     const field = Keys[i];
     const {type, defaultValue, check} = confKeys[field];
+    const checker = (check as <T>(v: T, config: Config) => v is T)
     if (config[field]) {
       let vaild = true;
       if (typeof check === 'function') {
-        if (!(check as <T>(v: T) => v is T)(config[field]) // todo
-          || config[field].constructor !== type) {
+        if (!checker(config[field], config)) {
           vaild = false;
         }
-      } else {
-        if (config[field].constructor !== type) {
-          vaild = false;
-        }
+      } else if (config[field].constructor !== type) {
+        vaild = false;
       }
       if (!vaild) {
         if (defaultValue) {
           Object.assign(config, {key: defaultValue})
         } else {
+          console.log(`${field} is invaild`)
           return false;
         }
       }
     } else if (defaultValue) {
       Object.assign(config, {key: defaultValue})
     } else {
+      if (typeof check === 'function' && checker(undefined, config)) {
+        continue;
+      }
+      console.log(`${field} is required`);
       return false;
     }
   }

@@ -8,12 +8,12 @@
 
 ## feature
 
-- [ ] base cli
+- [x] base cli
 - [ ] rollup 模版生成
 - [ ] trans node-esm
 - [ ] release 脚本模版 & changelog 脚本模板
 - [ ] lint 模板 （eslint & commit lint）
-- [ ] gitignore\editorconfig
+- [x] gitignore\editorconfig
 - [ ] 文件转 base64
 - [ ] 图片 预览页面生成
 - [ ] svg 转 iconfont
