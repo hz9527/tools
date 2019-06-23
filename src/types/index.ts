@@ -48,3 +48,5 @@ export interface ObjectExpandKeys {
   keys<T extends {}>(object: T): (keyof T)[];
 }
 
+export type DefaultKeys = 'cwd' | 'dir' | 'target' | 'port'
+

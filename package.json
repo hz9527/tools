@@ -32,7 +32,9 @@
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
     "glob": "^7.1.4",
-    "ora": "^3.4.0"
+    "ora": "^3.4.0",
+    "svg2ttf": "^4.3.0",
+    "svgicons2svgfont": "^9.1.1"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",

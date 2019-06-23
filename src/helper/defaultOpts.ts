@@ -6,6 +6,7 @@ const Opts: {[prop: string]: Args} = {
   target: ['-T, --target [path]', 'dist target path of cmd', './dist'],
   port: ['-p, --port [port]', 'server port', parseInt, 80],
   open: ['-o, --open', 'auto open browser'],
+  setting: ['-S, --setting', 'setting json/file for cmd', '"{}"']
 };
 
 export default Opts
