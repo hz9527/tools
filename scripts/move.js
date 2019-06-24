@@ -23,9 +23,10 @@ glob('cmds/*/templates/**', {cwd:  CWD + '/src'}, (err, files) => {
     process.exit(1);
   }
   const base = CWD + '/lib'
-  files.forEach(file => {
-    const [, path] = file.match(/(.+)\/[^\\/]+/);
-    autoMkdir(path, base);
-    execSync(`cp -f ./src/${file} ./lib/${file}`)
-  })
+  files.filter(f => !fs.statSync(`${CWD}/src/${f}`).isDirectory())
+    .forEach(file => {
+      const [, path] = file.match(/(.+)\/[^\\/]+/);
+      autoMkdir(path, base);
+      execSync(`cp -f ./src/${file} ./lib/${file}`)
+    })
 })

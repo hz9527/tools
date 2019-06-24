@@ -1,41 +1,43 @@
 import * as fs from "fs";
+import getHeader from '../helper/xml'
 
-type Infos = {name: string, unicode: string}[];
+type Infos = {name: string; unicode: string}[];
 const iconPrefix = 'icon-';
 const fontPostfix = '-iconfont';
 
-function write(file: string, str: string) {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(file, str, err => err ? reject(err) : resolve());
+function write(file: string, str: string): Promise<void> {
+  return new Promise((resolve, reject): void => {
+    fs.writeFile(file, str, (err): void => {
+      console.log(err)
+      err ? reject(err) : resolve()
+    });
   })
 }
 
-function genBaseCss(setting: any) {
+function genBaseCss(setting: any): Promise<void> {
   const {miniprogram, target, name} = setting;
   const base = `${target}/${name}`;
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject): void => {
     if (miniprogram) {
-      fs.readFile(`${base}.ttf`, (err, fd) => {
+      fs.readFile(`${base}.ttf`, (err, fd): void => {
         err ? reject(err)
           : resolve(`data:application/x-font-ttf;base64,${fd.toString('base64')}`);
       })
     } else {
       resolve()
     }
-  }).then(data => {
+  }).then((data): string => {
     const now = Date.now();
     let str = '';
     if (data) {
       str = `url(${data}) format('truetype');`
     } else {
       str = `
-        url('${base}.woff?t=${now}') format('woff'),
-        url('${base}.ttf?t=${now}') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
-        url('${base}.svg?t=${now}#iconfont') format('svg'); /* iOS 4.1- */`;
+        url('${name}.ttf?t=${now}') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+        url('${name}.svg?t=${now}#iconfont') format('svg'); /* iOS 4.1- */`;
     }
     return `@font-face {
       font-family: "${name}";
-      src: url('iconfont.eot?t=1561278124095'); /* IE9 */
       src: ${str}
     }
     
@@ -43,50 +45,47 @@ function genBaseCss(setting: any) {
       font-family: "iconfont" !important;
       font-size: 16px;
       font-style: normal;
+      -webkit-font-smoothing: antialiased;
     }`
-  }).then(str => write(`${base}/iconfont-base.css`, str))
+  }).then((str): Promise<void> => write(`${target}/iconfont-base.css`, str))
 }
 
-function genStyle(infos: Infos, setting: any) {
+function genStyle(infos: Infos, setting: any): Promise<void> {
   const {target, name} = setting;
-  const base = `${target}/${name}`;
-  const str = `${infos.map(info => `
+  const str = `
+  ${infos.map((info): string => `
   .${iconPrefix}${info.name}:before {
     font-family: ${name};
-    content: '${info.unicode}';
+    -webkit-font-smoothing: antialiased;
+    content: '${info.unicode.replace('\\u', '\\')}';
   }
-  `)}`
-  return write(`${base}/icons.css`, str);
+  `).join('\n')}`
+  return write(`${target}/icons.css`, str);
 }
 
-function genHtml(infos: Infos, setting: any) {
+function genHtml(infos: Infos, setting: any): Promise<void> {
   const {target, name: fontName} = setting;
   const html = `
   <!DOCTYPE html>
   <html>
-  <head>
-    <meta charset="utf-8"/>
-    <title>${fontName} Demo</title>
-    <link rel="stylesheet" href="./iconfont-base.css">
-    <link rel="stylesheet" href="./icons.css">
-    <style></style>
-  </head>
+    ${getHeader(setting)}
   <body>
-    <div>
-    ${infos.map(({name, unicode}) => `<div class="item">
-      <div class="${fontName}${fontPostfix}">${unicode.replace(/\\u/g, '&#')};</div>
-      <div class="${iconPrefix}${name}">${unicode.replace(/\\u/g, '&#')};</div>
-      <div class="name">iconName: ${name}</div>
-      <div class="content">${unicode.replace(/\\u/g, '&#')};</div>
-    </div>`)}
+    <div class="container">
+    ${infos.map(({name, unicode}): string => `<div class="item">
+      <div class="show-code ${fontName}${fontPostfix}">${unicode.replace(/\\u/g, '&#x')};</div>
+      <div class="show-class ${iconPrefix}${name}"></div>
+      <div class="text">iconName: ${name}</div>
+      <div class="text">class: ${iconPrefix}${name}</div>
+      <div class="text">unicode: &amp;${unicode.replace(/\\u/g, '#x')};</div>
+    </div>`).join('')}
     </div>
   </body>
   <html>
-  `
+  `;
   return write(`${target}/demo.html`, html);
 }
 
-function generator(infos: Infos, setting: any) {
+function generator(infos: Infos, setting: any): Promise<void []> {
   return Promise.all([
     genBaseCss(setting),
     genStyle(infos, setting),

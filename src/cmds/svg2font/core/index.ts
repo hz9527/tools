@@ -4,6 +4,8 @@ import getSvgFont from './svg2svgs';
 import transSvg from './format';
 import generator from './generator';
 
+type Infos = {name: string; unicode: string}[];
+
 const defaultSetting = {
   name: 'iconfont',
   miniprogram: true,
@@ -11,8 +13,8 @@ const defaultSetting = {
 }
 
 function getSvgs(cwd: string, dir: string, deep: boolean): Promise<string []> {
-  return new Promise((resolve, reject) => {
-    glob(`${dir}/${deep ? '**' : '*'}.svg`, {cwd}, (err, files) => {
+  return new Promise((resolve, reject): void => {
+    glob(`${dir}/${deep ? '**' : '*'}.svg`, {cwd}, (err, files): void => {
       err ? reject(err) : resolve(files)
     })
   })
@@ -33,19 +35,19 @@ function exec(opt: { [prop: string]: string }): Promise<void> {
   // svg 转 ttf
   // ttf 转其他字体
   // 生成 html
-  let data: {name: string, unicode: string}[] = [];
+  let data: Infos = [];
   return getSvgs(cwd, dir, setting.deep)
-    .then((files) => {
+    .then((files): Promise<Infos> => {
       setting.target = path.resolve(cwd, target)
       return getSvgFont(
         files.map(f => path.resolve(cwd, f)),
         setting
       )
-    }).then(infos => {
+    }).then((infos): void => {
       data = infos;
       return transSvg(setting);
-    }).then(() => generator(data, setting))
-    .then(() => {
+    }).then((): Promise<void []> => generator(data, setting))
+    .then((): void => {
       // open chrome
     })
 }

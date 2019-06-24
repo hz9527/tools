@@ -1,0 +1,29 @@
+
+  
+  .icon-fangshai:before {
+    font-family: iconfont;
+    -webkit-font-smoothing: antialiased;
+    content: '\e000';
+  }
+  
+
+  .icon-fendi:before {
+    font-family: iconfont;
+    -webkit-font-smoothing: antialiased;
+    content: '\e001';
+  }
+  
+
+  .icon-huazhuangshui:before {
+    font-family: iconfont;
+    -webkit-font-smoothing: antialiased;
+    content: '\e002';
+  }
+  
+
+  .icon-jiemaogao:before {
+    font-family: iconfont;
+    -webkit-font-smoothing: antialiased;
+    content: '\e003';
+  }
+  
