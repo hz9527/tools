@@ -33,7 +33,7 @@
     "commander": "^2.20.0",
     "glob": "^7.1.4",
     "ora": "^3.4.0",
-    "svg2ttf": "^4.3.0",
+    "svg2ttf": "^6.0.3",
     "svgicons2svgfont": "^9.1.1"
   },
   "devDependencies": {
